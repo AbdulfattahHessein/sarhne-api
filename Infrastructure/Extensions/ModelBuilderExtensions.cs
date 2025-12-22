@@ -2,7 +2,7 @@ using System;
 using Core.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace Infrastructure;
+namespace Infrastructure.Extensions;
 
 public static class ModelBuilderExtensions
 {
@@ -16,7 +16,7 @@ public static class ModelBuilderExtensions
             foreach (var entity in entityTypes)
             {
                 modelBuilder.Entity(entity.ClrType)
-                    .Property("Id")
+                    .Property(nameof(BaseEntity.Id))
                     .HasDefaultValueSql("NEWSEQUENTIALID()");
             }
         }

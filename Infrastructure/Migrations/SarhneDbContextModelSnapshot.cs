@@ -8,206 +8,266 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace Infrastructure.Migrations
+namespace Infrastructure.Migrations;
+
+[DbContext(typeof(SarhneDbContext))]
+partial class SarhneDbContextModelSnapshot : ModelSnapshot
 {
-    [DbContext(typeof(SarhneDbContext))]
-    partial class SarhneDbContextModelSnapshot : ModelSnapshot
+    protected override void BuildModel(ModelBuilder modelBuilder)
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
-        {
 #pragma warning disable 612, 618
-            modelBuilder
-                .HasAnnotation("ProductVersion", "10.0.1")
-                .HasAnnotation("Relational:MaxIdentifierLength", 128);
+        modelBuilder
+            .HasAnnotation("ProductVersion", "10.0.1")
+            .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
-            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+        SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("Core.Entities.Message", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier")
-                        .HasDefaultValueSql("NEWSEQUENTIALID()");
+        modelBuilder.Entity("Core.Entities.Message", b =>
+            {
+                b.Property<Guid>("Id")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("uniqueidentifier")
+                    .HasDefaultValueSql("NEWSEQUENTIALID()");
 
-                    b.Property<string>("Content")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                b.Property<string>("Content")
+                    .IsRequired()
+                    .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("datetime2");
+                b.Property<DateTime>("Date")
+                    .HasColumnType("datetime2");
 
-                    b.Property<bool>("IsFav")
-                        .HasColumnType("bit");
+                b.Property<bool>("IsFav")
+                    .HasColumnType("bit");
 
-                    b.Property<bool>("IsPublic")
-                        .HasColumnType("bit");
+                b.Property<bool>("IsPublic")
+                    .HasColumnType("bit");
 
-                    b.Property<Guid>("ReceiverId")
-                        .HasColumnType("uniqueidentifier");
+                b.Property<Guid>("ReceiverId")
+                    .HasColumnType("uniqueidentifier");
 
-                    b.Property<bool>("SendAnonymously")
-                        .HasColumnType("bit");
+                b.Property<bool>("SendAnonymously")
+                    .HasColumnType("bit");
 
-                    b.Property<Guid>("SenderId")
-                        .HasColumnType("uniqueidentifier");
+                b.Property<Guid>("SenderId")
+                    .HasColumnType("uniqueidentifier");
 
-                    b.HasKey("Id");
+                b.HasKey("Id");
 
-                    b.HasIndex("ReceiverId");
+                b.HasIndex("ReceiverId");
 
-                    b.HasIndex("SenderId");
+                b.HasIndex("SenderId");
 
-                    b.ToTable("Messages");
-                });
+                b.ToTable("Messages");
+            });
 
-            modelBuilder.Entity("Core.Entities.Settings", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier")
-                        .HasDefaultValueSql("NEWSEQUENTIALID()");
+        modelBuilder.Entity("Core.Entities.Role", b =>
+            {
+                b.Property<Guid>("Id")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("uniqueidentifier")
+                    .HasDefaultValueSql("NEWSEQUENTIALID()");
 
-                    b.Property<bool>("AllowAnonymous")
-                        .HasColumnType("bit");
+                b.Property<string>("Name")
+                    .IsRequired()
+                    .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("AllowImages")
-                        .HasColumnType("bit");
+                b.HasKey("Id");
 
-                    b.Property<bool>("AllowMessages")
-                        .HasColumnType("bit");
+                b.ToTable("Role");
+            });
 
-                    b.HasKey("Id");
+        modelBuilder.Entity("Core.Entities.Settings", b =>
+            {
+                b.Property<Guid>("Id")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("uniqueidentifier")
+                    .HasDefaultValueSql("NEWSEQUENTIALID()");
 
-                    b.ToTable("Settings");
-                });
+                b.Property<bool>("AllowAnonymous")
+                    .HasColumnType("bit");
 
-            modelBuilder.Entity("Core.Entities.User", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier")
-                        .HasDefaultValueSql("NEWSEQUENTIALID()");
+                b.Property<bool>("AllowImages")
+                    .HasColumnType("bit");
 
-                    b.Property<string>("Bio")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                b.Property<bool>("AllowMessages")
+                    .HasColumnType("bit");
 
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                b.HasKey("Id");
 
-                    b.Property<string>("Gender")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                b.ToTable("Settings");
+            });
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+        modelBuilder.Entity("Core.Entities.User", b =>
+            {
+                b.Property<Guid>("Id")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("uniqueidentifier")
+                    .HasDefaultValueSql("NEWSEQUENTIALID()");
 
-                    b.Property<string>("Password")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                b.Property<string>("Bio")
+                    .IsRequired()
+                    .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("PhoneNumber")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                b.Property<string>("Email")
+                    .IsRequired()
+                    .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("ProfileSlug")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                b.Property<string>("Gender")
+                    .IsRequired()
+                    .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("Id");
+                b.Property<bool>("IsActive")
+                    .HasColumnType("bit");
 
-                    b.ToTable("Users");
-                });
+                b.Property<string>("Name")
+                    .IsRequired()
+                    .HasColumnType("nvarchar(max)");
 
-            modelBuilder.Entity("Core.Entities.UserFollower", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier")
-                        .HasDefaultValueSql("NEWSEQUENTIALID()");
+                b.Property<string>("PasswordHash")
+                    .IsRequired()
+                    .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("FollowerId")
-                        .HasColumnType("uniqueidentifier");
+                b.Property<string>("PhoneNumber")
+                    .IsRequired()
+                    .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("FollowingId")
-                        .HasColumnType("uniqueidentifier");
+                b.Property<string>("ProfileSlug")
+                    .IsRequired()
+                    .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("Id");
+                b.HasKey("Id");
 
-                    b.HasIndex("FollowingId");
+                b.ToTable("Users");
+            });
 
-                    b.HasIndex("FollowerId", "FollowingId")
-                        .IsUnique();
+        modelBuilder.Entity("Core.Entities.UserFollower", b =>
+            {
+                b.Property<Guid>("Id")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("uniqueidentifier")
+                    .HasDefaultValueSql("NEWSEQUENTIALID()");
 
-                    b.ToTable("UserFollowers", t =>
-                        {
-                            t.HasCheckConstraint("CK_UserFollower_SelfFollow", "[FollowerId] <> [FollowingId]");
-                        });
-                });
+                b.Property<Guid>("FollowerId")
+                    .HasColumnType("uniqueidentifier");
 
-            modelBuilder.Entity("Core.Entities.Message", b =>
-                {
-                    b.HasOne("Core.Entities.User", "Receiver")
-                        .WithMany("ReceivedMessages")
-                        .HasForeignKey("ReceiverId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                b.Property<Guid>("FollowingId")
+                    .HasColumnType("uniqueidentifier");
 
-                    b.HasOne("Core.Entities.User", "Sender")
-                        .WithMany("SentMessages")
-                        .HasForeignKey("SenderId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                b.HasKey("Id");
 
-                    b.Navigation("Receiver");
+                b.HasIndex("FollowingId");
 
-                    b.Navigation("Sender");
-                });
+                b.HasIndex("FollowerId", "FollowingId")
+                    .IsUnique();
 
-            modelBuilder.Entity("Core.Entities.Settings", b =>
-                {
-                    b.HasOne("Core.Entities.User", null)
-                        .WithOne("Settings")
-                        .HasForeignKey("Core.Entities.Settings", "Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
+                b.ToTable("UserFollowers", t =>
+                    {
+                        t.HasCheckConstraint("CK_UserFollower_SelfFollow", "[FollowerId] <> [FollowingId]");
+                    });
+            });
 
-            modelBuilder.Entity("Core.Entities.UserFollower", b =>
-                {
-                    b.HasOne("Core.Entities.User", "Follower")
-                        .WithMany("Following")
-                        .HasForeignKey("FollowerId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+        modelBuilder.Entity("Core.Entities.UserRole", b =>
+            {
+                b.Property<Guid>("Id")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("uniqueidentifier")
+                    .HasDefaultValueSql("NEWSEQUENTIALID()");
 
-                    b.HasOne("Core.Entities.User", "Following")
-                        .WithMany("Followers")
-                        .HasForeignKey("FollowingId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                b.Property<Guid>("RoleId")
+                    .HasColumnType("uniqueidentifier");
 
-                    b.Navigation("Follower");
+                b.Property<Guid>("UserId")
+                    .HasColumnType("uniqueidentifier");
 
-                    b.Navigation("Following");
-                });
+                b.HasKey("Id");
 
-            modelBuilder.Entity("Core.Entities.User", b =>
-                {
-                    b.Navigation("Followers");
+                b.HasIndex("RoleId");
 
-                    b.Navigation("Following");
+                b.HasIndex("UserId", "RoleId")
+                    .IsUnique();
 
-                    b.Navigation("ReceivedMessages");
+                b.ToTable("UserRole");
+            });
 
-                    b.Navigation("SentMessages");
+        modelBuilder.Entity("Core.Entities.Message", b =>
+            {
+                b.HasOne("Core.Entities.User", "Receiver")
+                    .WithMany("ReceivedMessages")
+                    .HasForeignKey("ReceiverId")
+                    .OnDelete(DeleteBehavior.NoAction)
+                    .IsRequired();
 
-                    b.Navigation("Settings")
-                        .IsRequired();
-                });
+                b.HasOne("Core.Entities.User", "Sender")
+                    .WithMany("SentMessages")
+                    .HasForeignKey("SenderId")
+                    .OnDelete(DeleteBehavior.NoAction)
+                    .IsRequired();
+
+                b.Navigation("Receiver");
+
+                b.Navigation("Sender");
+            });
+
+        modelBuilder.Entity("Core.Entities.Settings", b =>
+            {
+                b.HasOne("Core.Entities.User", null)
+                    .WithOne("Settings")
+                    .HasForeignKey("Core.Entities.Settings", "Id")
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .IsRequired();
+            });
+
+        modelBuilder.Entity("Core.Entities.UserFollower", b =>
+            {
+                b.HasOne("Core.Entities.User", "Follower")
+                    .WithMany("Followings")
+                    .HasForeignKey("FollowerId")
+                    .OnDelete(DeleteBehavior.Restrict)
+                    .IsRequired();
+
+                b.HasOne("Core.Entities.User", "Following")
+                    .WithMany("Followers")
+                    .HasForeignKey("FollowingId")
+                    .OnDelete(DeleteBehavior.Restrict)
+                    .IsRequired();
+
+                b.Navigation("Follower");
+
+                b.Navigation("Following");
+            });
+
+        modelBuilder.Entity("Core.Entities.UserRole", b =>
+            {
+                b.HasOne("Core.Entities.Role", "Role")
+                    .WithMany()
+                    .HasForeignKey("RoleId")
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .IsRequired();
+
+                b.HasOne("Core.Entities.User", "User")
+                    .WithMany()
+                    .HasForeignKey("UserId")
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .IsRequired();
+
+                b.Navigation("Role");
+
+                b.Navigation("User");
+            });
+
+        modelBuilder.Entity("Core.Entities.User", b =>
+            {
+                b.Navigation("Followers");
+
+                b.Navigation("Followings");
+
+                b.Navigation("ReceivedMessages");
+
+                b.Navigation("SentMessages");
+
+                b.Navigation("Settings")
+                    .IsRequired();
+            });
 #pragma warning restore 612, 618
-        }
     }
 }

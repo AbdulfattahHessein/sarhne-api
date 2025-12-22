@@ -11,7 +11,7 @@ public class UserFollowerConfig : IEntityTypeConfiguration<UserFollower>
         // 1. Configure the "Following" side
         builder
             .HasOne(uf => uf.Follower)
-            .WithMany(u => u.Following) // Navigation property on User: "Who am I following?"
+            .WithMany(u => u.Followings) // Navigation property on User: "Who am I following?"
             .HasForeignKey(uf => uf.FollowerId)
             .OnDelete(DeleteBehavior.Restrict);
 

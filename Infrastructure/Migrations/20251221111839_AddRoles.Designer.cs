@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations;
 
 [DbContext(typeof(SarhneDbContext))]
-[Migration("20251220225007_AddUserFollower")]
-partial class AddUserFollower
+[Migration("20251221111839_AddRoles")]
+partial class AddRoles
 {
     /// <inheritdoc />
     protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -61,6 +61,22 @@ partial class AddUserFollower
                 b.HasIndex("SenderId");
 
                 b.ToTable("Messages");
+            });
+
+        modelBuilder.Entity("Core.Entities.Role", b =>
+            {
+                b.Property<Guid>("Id")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("uniqueidentifier")
+                    .HasDefaultValueSql("NEWSEQUENTIALID()");
+
+                b.Property<string>("Name")
+                    .IsRequired()
+                    .HasColumnType("nvarchar(max)");
+
+                b.HasKey("Id");
+
+                b.ToTable("Role");
             });
 
         modelBuilder.Entity("Core.Entities.Settings", b =>
@@ -150,6 +166,29 @@ partial class AddUserFollower
                     });
             });
 
+        modelBuilder.Entity("Core.Entities.UserRole", b =>
+            {
+                b.Property<Guid>("Id")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("uniqueidentifier")
+                    .HasDefaultValueSql("NEWSEQUENTIALID()");
+
+                b.Property<Guid>("RoleId")
+                    .HasColumnType("uniqueidentifier");
+
+                b.Property<Guid>("UserId")
+                    .HasColumnType("uniqueidentifier");
+
+                b.HasKey("Id");
+
+                b.HasIndex("RoleId");
+
+                b.HasIndex("UserId", "RoleId")
+                    .IsUnique();
+
+                b.ToTable("UserRole");
+            });
+
         modelBuilder.Entity("Core.Entities.Message", b =>
             {
                 b.HasOne("Core.Entities.User", "Receiver")
@@ -181,7 +220,7 @@ partial class AddUserFollower
         modelBuilder.Entity("Core.Entities.UserFollower", b =>
             {
                 b.HasOne("Core.Entities.User", "Follower")
-                    .WithMany("Following")
+                    .WithMany("Followings")
                     .HasForeignKey("FollowerId")
                     .OnDelete(DeleteBehavior.Restrict)
                     .IsRequired();
@@ -197,11 +236,30 @@ partial class AddUserFollower
                 b.Navigation("Following");
             });
 
+        modelBuilder.Entity("Core.Entities.UserRole", b =>
+            {
+                b.HasOne("Core.Entities.Role", "Role")
+                    .WithMany()
+                    .HasForeignKey("RoleId")
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .IsRequired();
+
+                b.HasOne("Core.Entities.User", "User")
+                    .WithMany()
+                    .HasForeignKey("UserId")
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .IsRequired();
+
+                b.Navigation("Role");
+
+                b.Navigation("User");
+            });
+
         modelBuilder.Entity("Core.Entities.User", b =>
             {
                 b.Navigation("Followers");
 
-                b.Navigation("Following");
+                b.Navigation("Followings");
 
                 b.Navigation("ReceivedMessages");
 

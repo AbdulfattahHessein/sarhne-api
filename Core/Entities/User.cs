@@ -10,7 +10,8 @@ public class User : BaseEntity
     public string Bio { get; set; } = string.Empty;
     public string PhoneNumber { get; set; } = string.Empty;
     public string ProfileSlug { get; set; } = string.Empty;
-    public string Password { get; set; } = string.Empty;
+    public string PasswordHash { get; set; } = string.Empty;
+    public bool IsActive { get; set; }
     public Gender Gender { get; set; }
 
     public ICollection<Message> SentMessages { get; set; } = [];
@@ -25,5 +26,6 @@ public class User : BaseEntity
 
     public ICollection<UserFollower> Followers { get; set; } = []; //(People following me)
 
-    public ICollection<UserFollower> Following { get; set; } = []; //(People I follow)
+    public ICollection<UserFollower> Followings { get; set; } = []; //(People I follow)
+    public ICollection<Role> Roles { get; set; } = [];
 }

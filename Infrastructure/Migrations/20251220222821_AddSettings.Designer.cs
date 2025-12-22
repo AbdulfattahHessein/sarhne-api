@@ -9,159 +9,158 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace Infrastructure.Migrations
+namespace Infrastructure.Migrations;
+
+[DbContext(typeof(SarhneDbContext))]
+[Migration("20251220222821_AddSettings")]
+partial class AddSettings
 {
-    [DbContext(typeof(SarhneDbContext))]
-    [Migration("20251220222821_AddSettings")]
-    partial class AddSettings
+    /// <inheritdoc />
+    protected override void BuildTargetModel(ModelBuilder modelBuilder)
     {
-        /// <inheritdoc />
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
-        {
 #pragma warning disable 612, 618
-            modelBuilder
-                .HasAnnotation("ProductVersion", "10.0.1")
-                .HasAnnotation("Relational:MaxIdentifierLength", 128);
+        modelBuilder
+            .HasAnnotation("ProductVersion", "10.0.1")
+            .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
-            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+        SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("Core.Entities.Message", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier")
-                        .HasDefaultValueSql("NEWSEQUENTIALID()");
+        modelBuilder.Entity("Core.Entities.Message", b =>
+            {
+                b.Property<Guid>("Id")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("uniqueidentifier")
+                    .HasDefaultValueSql("NEWSEQUENTIALID()");
 
-                    b.Property<string>("Content")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                b.Property<string>("Content")
+                    .IsRequired()
+                    .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("datetime2");
+                b.Property<DateTime>("Date")
+                    .HasColumnType("datetime2");
 
-                    b.Property<bool>("IsFav")
-                        .HasColumnType("bit");
+                b.Property<bool>("IsFav")
+                    .HasColumnType("bit");
 
-                    b.Property<bool>("IsPublic")
-                        .HasColumnType("bit");
+                b.Property<bool>("IsPublic")
+                    .HasColumnType("bit");
 
-                    b.Property<Guid>("ReceiverId")
-                        .HasColumnType("uniqueidentifier");
+                b.Property<Guid>("ReceiverId")
+                    .HasColumnType("uniqueidentifier");
 
-                    b.Property<bool>("SendAnonymously")
-                        .HasColumnType("bit");
+                b.Property<bool>("SendAnonymously")
+                    .HasColumnType("bit");
 
-                    b.Property<Guid>("SenderId")
-                        .HasColumnType("uniqueidentifier");
+                b.Property<Guid>("SenderId")
+                    .HasColumnType("uniqueidentifier");
 
-                    b.HasKey("Id");
+                b.HasKey("Id");
 
-                    b.HasIndex("ReceiverId");
+                b.HasIndex("ReceiverId");
 
-                    b.HasIndex("SenderId");
+                b.HasIndex("SenderId");
 
-                    b.ToTable("Messages");
-                });
+                b.ToTable("Messages");
+            });
 
-            modelBuilder.Entity("Core.Entities.Settings", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier")
-                        .HasDefaultValueSql("NEWSEQUENTIALID()");
+        modelBuilder.Entity("Core.Entities.Settings", b =>
+            {
+                b.Property<Guid>("Id")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("uniqueidentifier")
+                    .HasDefaultValueSql("NEWSEQUENTIALID()");
 
-                    b.Property<bool>("AllowAnonymous")
-                        .HasColumnType("bit");
+                b.Property<bool>("AllowAnonymous")
+                    .HasColumnType("bit");
 
-                    b.Property<bool>("AllowImages")
-                        .HasColumnType("bit");
+                b.Property<bool>("AllowImages")
+                    .HasColumnType("bit");
 
-                    b.Property<bool>("AllowMessages")
-                        .HasColumnType("bit");
+                b.Property<bool>("AllowMessages")
+                    .HasColumnType("bit");
 
-                    b.HasKey("Id");
+                b.HasKey("Id");
 
-                    b.ToTable("Settings");
-                });
+                b.ToTable("Settings");
+            });
 
-            modelBuilder.Entity("Core.Entities.User", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier")
-                        .HasDefaultValueSql("NEWSEQUENTIALID()");
+        modelBuilder.Entity("Core.Entities.User", b =>
+            {
+                b.Property<Guid>("Id")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("uniqueidentifier")
+                    .HasDefaultValueSql("NEWSEQUENTIALID()");
 
-                    b.Property<string>("Bio")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                b.Property<string>("Bio")
+                    .IsRequired()
+                    .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                b.Property<string>("Email")
+                    .IsRequired()
+                    .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Gender")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                b.Property<string>("Gender")
+                    .IsRequired()
+                    .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                b.Property<string>("Name")
+                    .IsRequired()
+                    .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Password")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                b.Property<string>("Password")
+                    .IsRequired()
+                    .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("PhoneNumber")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                b.Property<string>("PhoneNumber")
+                    .IsRequired()
+                    .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("ProfileSlug")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                b.Property<string>("ProfileSlug")
+                    .IsRequired()
+                    .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("Id");
+                b.HasKey("Id");
 
-                    b.ToTable("Users");
-                });
+                b.ToTable("Users");
+            });
 
-            modelBuilder.Entity("Core.Entities.Message", b =>
-                {
-                    b.HasOne("Core.Entities.User", "Receiver")
-                        .WithMany("ReceivedMessages")
-                        .HasForeignKey("ReceiverId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+        modelBuilder.Entity("Core.Entities.Message", b =>
+            {
+                b.HasOne("Core.Entities.User", "Receiver")
+                    .WithMany("ReceivedMessages")
+                    .HasForeignKey("ReceiverId")
+                    .OnDelete(DeleteBehavior.NoAction)
+                    .IsRequired();
 
-                    b.HasOne("Core.Entities.User", "Sender")
-                        .WithMany("SentMessages")
-                        .HasForeignKey("SenderId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                b.HasOne("Core.Entities.User", "Sender")
+                    .WithMany("SentMessages")
+                    .HasForeignKey("SenderId")
+                    .OnDelete(DeleteBehavior.NoAction)
+                    .IsRequired();
 
-                    b.Navigation("Receiver");
+                b.Navigation("Receiver");
 
-                    b.Navigation("Sender");
-                });
+                b.Navigation("Sender");
+            });
 
-            modelBuilder.Entity("Core.Entities.Settings", b =>
-                {
-                    b.HasOne("Core.Entities.User", null)
-                        .WithOne("Settings")
-                        .HasForeignKey("Core.Entities.Settings", "Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
+        modelBuilder.Entity("Core.Entities.Settings", b =>
+            {
+                b.HasOne("Core.Entities.User", null)
+                    .WithOne("Settings")
+                    .HasForeignKey("Core.Entities.Settings", "Id")
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .IsRequired();
+            });
 
-            modelBuilder.Entity("Core.Entities.User", b =>
-                {
-                    b.Navigation("ReceivedMessages");
+        modelBuilder.Entity("Core.Entities.User", b =>
+            {
+                b.Navigation("ReceivedMessages");
 
-                    b.Navigation("SentMessages");
+                b.Navigation("SentMessages");
 
-                    b.Navigation("Settings")
-                        .IsRequired();
-                });
+                b.Navigation("Settings")
+                    .IsRequired();
+            });
 #pragma warning restore 612, 618
-        }
     }
 }
