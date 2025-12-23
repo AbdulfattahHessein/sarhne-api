@@ -22,8 +22,9 @@ namespace Shared
             return services;
         }
 
-        public static IServiceCollection AddSharedTemplateService(this IServiceCollection services) =>
-            services.AddScoped<ITemplateService, TemplateService>();
+        public static IServiceCollection AddSharedTemplateService(
+            this IServiceCollection services
+        ) => services.AddScoped<ITemplateService, TemplateService>();
 
         public static IServiceCollection AddSharedUriService(this IServiceCollection services)
         {

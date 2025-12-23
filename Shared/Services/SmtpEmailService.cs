@@ -26,7 +26,10 @@ namespace Shared.Services
                 Host = smtpSettings["Host"]!,
                 Port = int.Parse(smtpSettings["Port"]!),
                 EnableSsl = true,
-                Credentials = new NetworkCredential(smtpSettings["Username"], smtpSettings["Password"]),
+                Credentials = new NetworkCredential(
+                    smtpSettings["Username"],
+                    smtpSettings["Password"]
+                ),
             };
 
             await client.SendMailAsync(message);

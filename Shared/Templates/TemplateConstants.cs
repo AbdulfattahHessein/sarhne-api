@@ -6,4 +6,3 @@
         public const string ResetPasswordEmail = "reset_password_email.html";
     }
 }
-

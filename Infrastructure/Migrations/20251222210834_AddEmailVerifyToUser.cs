@@ -15,14 +15,13 @@ public partial class AddEmailVerifyToUser : Migration
             table: "Users",
             type: "bit",
             nullable: false,
-            defaultValue: false);
+            defaultValue: false
+        );
     }
 
     /// <inheritdoc />
     protected override void Down(MigrationBuilder migrationBuilder)
     {
-        migrationBuilder.DropColumn(
-            name: "IsEmailConfirmed",
-            table: "Users");
+        migrationBuilder.DropColumn(name: "IsEmailConfirmed", table: "Users");
     }
 }

@@ -10,11 +10,7 @@ public partial class UpdateUser : Migration
     /// <inheritdoc />
     protected override void Up(MigrationBuilder migrationBuilder)
     {
-        migrationBuilder.RenameColumn(
-            name: "Password",
-            table: "Users",
-            newName: "PasswordHash"
-        );
+        migrationBuilder.RenameColumn(name: "Password", table: "Users", newName: "PasswordHash");
 
         migrationBuilder.AddColumn<bool>(
             name: "IsActive",
@@ -30,10 +26,6 @@ public partial class UpdateUser : Migration
     {
         migrationBuilder.DropColumn(name: "IsActive", table: "Users");
 
-        migrationBuilder.RenameColumn(
-            name: "PasswordHash",
-            table: "Users",
-            newName: "Password"
-        );
+        migrationBuilder.RenameColumn(name: "PasswordHash", table: "Users", newName: "Password");
     }
 }

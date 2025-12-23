@@ -6,4 +6,3 @@ public record BaseResponse(int Id)
 
     public static implicit operator int(BaseResponse response) => response.Id;
 };
-
