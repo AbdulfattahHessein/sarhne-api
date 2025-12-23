@@ -1,7 +1,7 @@
-using System.Reflection;
 using Api.DI;
 using Api.Extensions;
 using Api.Interfaces;
+using Api.Middleware;
 using Api.Services.Contracts;
 using Api.Services.Implementations;
 using Core.Entities;
@@ -9,13 +9,21 @@ using FluentValidation;
 using Infrastructure;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Scalar.AspNetCore;
 using Shared;
 using SharpGrip.FluentValidation.AutoValidation.Endpoints.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddOpenApi();
+builder.Services.AddOpenApi(options =>
+{
+    options.CreateSchemaReferenceId = (json) =>
+    {
+        if (json.Type.FullName == null)
+            return json.Type.Name;
+
+        return json.Type.FullName.Replace("Api.Features.", "").Replace("+Request", "");
+    };
+});
 
 builder.Services.AddEndpoints();
 
@@ -24,6 +32,7 @@ builder.Services.AddMemoryCache();
 builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
 
 builder.Services.AddScoped<IEmailTokenService, EmailTokenService>();
+
 builder.Services.AddScoped<ISmtpEmailService, SmtpEmailService>();
 
 builder.Services.AddSharedTemplateService();
@@ -35,20 +44,7 @@ builder.Services.AddDbContext<SarhneDbContext>(options =>
 
 builder.Services.AddCookieAuthentication();
 
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy(
-        "AllowFrontend",
-        policy =>
-        {
-            policy
-                .WithOrigins("http://localhost:4200") // Your frontend URL
-                .AllowAnyHeader()
-                .AllowAnyMethod()
-                .AllowCredentials(); // <--- CRITICAL
-        }
-    );
-});
+builder.Services.AddClientAppCorsPolicy();
 
 builder
     .Services.AddFluentValidationAutoValidation()
@@ -56,22 +52,26 @@ builder
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.MapOpenApi();
-    app.MapScalarApiReference(config =>
-    {
-        app.MapGet("/", () => Results.Redirect("/scalar"))
-            .ExcludeFromDescription()
-            .ExcludeFromApiReference();
-    });
-}
-
 app.UseHttpsRedirection();
+
+app.UseDefaultFiles();
+
 app.UseStaticFiles();
 
 app.UseCookieAuthentication();
+
+app.UseMiddleware<ExceptionHandlingMiddleware>();
+
+if (app.Environment.IsDevelopment())
+{
+    app.UseScalarApi();
+
+    await AutomatedMigration.MigrateAsync<SarhneDbContext>(app.Services);
+
+    app.UseMiddleware<PerformanceMiddleware>();
+}
+
+app.UseMiddleware<TransactionMiddleware>();
 
 var appGroup = app.MapGroup("/api").AddFluentValidationAutoValidation();
 

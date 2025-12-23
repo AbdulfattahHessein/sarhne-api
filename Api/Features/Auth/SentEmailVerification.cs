@@ -7,13 +7,13 @@ using Shared.Services.Interfaces;
 
 namespace Api.Features.Auth;
 
-public static class SentEmailVerification
+public static class SendEmailVerification
 {
     public record Request(string Email);
 
     public static async Task<IResult> Handler(
-        SarhneDbContext dbContext,
         Request request,
+        SarhneDbContext dbContext,
         ISmtpEmailService emailService,
         ITemplateService templateService,
         IEmailTokenService emailTokenService,

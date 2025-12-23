@@ -17,13 +17,12 @@ public class AuthEndPoints : IEndpoint
 
         authGroup.MapPost("/logout", (Delegate)Logout.Handler);
 
-        authGroup.MapPost("/email-verification", SentEmailVerification.Handler);
+        authGroup.MapPost("/email-verification", SendEmailVerification.Handler);
 
         authGroup.MapGet("/email-verification", ConfirmEmail.Handler);
 
-        authGroup
-            .MapGet("/user-info", UserInfo.Handler);
-            // .RequireRoles(RoleType.User, RoleType.Admin);
+        authGroup.MapGet("/user-info", UserInfo.Handler);
+        // .RequireRoles(RoleType.User, RoleType.Admin);
 
         // authGroup.MapGet("/roles", Roles.Handler).RequireRoles(RoleType.User, RoleType.Admin);
     }
