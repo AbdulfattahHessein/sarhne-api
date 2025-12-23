@@ -1,7 +1,9 @@
 using Core.Entities;
+using Core.Enums;
 using FluentValidation;
 using Infrastructure;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace Api.Features.Auth;
 
@@ -37,6 +39,11 @@ public static class Register
 
         // Save the user to the database
         var newUser = new User { Email = model.Email };
+
+        var userRole = await dbContext.Roles.FirstOrDefaultAsync(r => r.Name == RoleType.User);
+
+        if (userRole != null)
+            newUser.Roles.Add(userRole);
 
         newUser.PasswordHash = hasher.HashPassword(newUser, model.Password); // In real app, hash the password
 

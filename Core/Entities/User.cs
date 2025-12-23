@@ -11,6 +11,7 @@ public class User : BaseEntity
     public string PhoneNumber { get; set; } = string.Empty;
     public string ProfileSlug { get; set; } = string.Empty;
     public string PasswordHash { get; set; } = string.Empty;
+    public bool IsEmailConfirmed { get; set; }
     public bool IsActive { get; set; }
     public Gender Gender { get; set; }
 

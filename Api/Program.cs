@@ -2,13 +2,15 @@ using System.Reflection;
 using Api.DI;
 using Api.Extensions;
 using Api.Interfaces;
+using Api.Services.Contracts;
+using Api.Services.Implementations;
 using Core.Entities;
 using FluentValidation;
 using Infrastructure;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
+using Shared;
 using SharpGrip.FluentValidation.AutoValidation.Endpoints.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -20,6 +22,11 @@ builder.Services.AddEndpoints();
 builder.Services.AddMemoryCache();
 
 builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
+
+builder.Services.AddScoped<IEmailTokenService, EmailTokenService>();
+builder.Services.AddScoped<ISmtpEmailService, SmtpEmailService>();
+
+builder.Services.AddSharedTemplateService();
 
 builder.Services.AddDbContext<SarhneDbContext>(options =>
 {

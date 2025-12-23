@@ -30,27 +30,30 @@ public static class Login
     }
 
     public static async Task<IResult> Handler(
-        Request model,
+        Request request,
         SarhneDbContext dbContext,
         ClaimsPrincipal User,
         IPasswordHasher<User> hasher,
         HttpContext httpContext
     )
     {
-        if (User.Identity?.IsAuthenticated == true)
+        if (
+            User.Identity?.IsAuthenticated == true
+            && User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value == request.Email
+        )
         {
             return TypedResults.BadRequest("You are already logged in.");
         }
 
         var user = await dbContext
             .Users.Include(u => u.Roles)
-            .SingleOrDefaultAsync(u => u.Email == model.Email);
+            .SingleOrDefaultAsync(u => u.Email == request.Email);
 
         if (user == null)
             return TypedResults.Unauthorized();
 
         // Verify the password
-        var result = hasher.VerifyHashedPassword(user, user.PasswordHash, model.Password);
+        var result = hasher.VerifyHashedPassword(user, user.PasswordHash, request.Password);
 
         if (result == PasswordVerificationResult.Failed)
         {
@@ -58,7 +61,7 @@ public static class Login
                 new ProblemDetails
                 {
                     Title = "Invalid credentials",
-                    Status = (int)HttpStatusCode.Unauthorized,
+                    Status = StatusCodes.Status401Unauthorized,
                     Detail = "The provided email or password is incorrect.",
                 }
             );
@@ -66,7 +69,7 @@ public static class Login
 
         List<Claim> claims =
         [
-            new(ClaimTypes.Email, model.Email),
+            new(ClaimTypes.Email, request.Email),
             new(ClaimTypes.NameIdentifier, user.Id.ToString()),
         ];
 

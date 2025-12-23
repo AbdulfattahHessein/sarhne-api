@@ -11,12 +11,20 @@ public class AuthEndPoints : IEndpoint
     {
         var authGroup = app.MapGroup("/auth").WithTags("Auth");
 
-        authGroup.MapPost("/login", Login.Handler);
-
         authGroup.MapPost("/register", Register.Handler);
+
+        authGroup.MapPost("/login", Login.Handler);
 
         authGroup.MapPost("/logout", (Delegate)Logout.Handler);
 
-        authGroup.MapGet("/roles", Roles.Handler).RequireRoles(RoleType.User, RoleType.Admin);
+        authGroup.MapPost("/email-verification", SentEmailVerification.Handler);
+
+        authGroup.MapGet("/email-verification", ConfirmEmail.Handler);
+
+        authGroup
+            .MapGet("/user-info", UserInfo.Handler);
+            // .RequireRoles(RoleType.User, RoleType.Admin);
+
+        // authGroup.MapGet("/roles", Roles.Handler).RequireRoles(RoleType.User, RoleType.Admin);
     }
 }
