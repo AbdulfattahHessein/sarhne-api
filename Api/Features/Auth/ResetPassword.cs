@@ -1,20 +1,30 @@
+using Adwar.Core.Models;
 using Api.Models.Api;
+using Core;
+using Core.Entities;
 using FluentValidation;
 using Infrastructure;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Shared.Services.Interfaces;
 
 namespace Api.Features.Auth;
 
-public abstract class ConfirmEmail : ApiEndpoint
+public abstract class ResetPassword : ApiEndpoint
 {
-    public record Request(string Email, string Token);
+    public record Request(string Email, string Token, string Password);
 
-    public static async Task<IResult> Handler([AsParameters] Request _, AppDbContext dbContext)
+    public static async Task<IResult> Handler(
+        Request request,
+        AppDbContext dbContext,
+        IPasswordHasher<User> PasswordHasher
+    )
     {
-        await dbContext.Users.ExecuteUpdateAsync(u =>
-            u.SetProperty(user => user.IsEmailConfirmed, true)
-        );
+        var user = await dbContext.Users.FirstAsync(u => u.Email == request.Email);
+
+        user.PasswordHash = PasswordHasher.HashPassword(user, request.Password); // In real app, hash the password
+
+        await dbContext.SaveChangesAsync();
 
         return NoContent();
     }
@@ -25,26 +35,19 @@ public abstract class ConfirmEmail : ApiEndpoint
         {
             RuleFor(x => x.Email).NotEmpty().EmailAddress();
 
-            RuleFor(x => x.Token).NotEmpty();
-
             RuleFor(x => x)
                 .CustomAsync(
                     async (request, context, cancellation) =>
                     {
                         var user = await dbContext.Users.FirstOrDefaultAsync(
                             u => u.Email == request.Email,
-                            cancellation
+                            cancellationToken: cancellation
                         );
 
                         if (user == null)
                         {
                             context.AddFailure(nameof(request.Email), "User not found.");
                             return;
-                        }
-
-                        if (user.IsEmailConfirmed)
-                        {
-                            context.AddFailure(nameof(request.Email), "Email already confirmed.");
                         }
 
                         var isValid = emailTokenService.Validate(
@@ -59,6 +62,8 @@ public abstract class ConfirmEmail : ApiEndpoint
                         }
                     }
                 );
+
+            RuleFor(x => x.Password).NotEmpty();
         }
     }
 }

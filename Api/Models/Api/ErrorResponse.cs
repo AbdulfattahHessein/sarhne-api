@@ -1,7 +1,7 @@
 namespace Api.Models.Api;
 
 public class ErrorResponse(string message, IDictionary<string, string[]>? errors = null)
-    : ApiResponse(false, message)
+    : ApiResponse(message)
 {
     public IDictionary<string, string[]>? Errors { get; } = errors;
 

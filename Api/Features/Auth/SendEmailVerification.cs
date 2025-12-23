@@ -1,33 +1,51 @@
 using System.Net;
-using Api.Services.Contracts;
-using Api.Templates;
+using Api.Models.Api;
+using FluentValidation;
 using Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Shared.Services.Interfaces;
+using Shared.Templates;
 
 namespace Api.Features.Auth;
 
-public static class SendEmailVerification
+public abstract class SendEmailVerification : ApiEndpoint
 {
     public record Request(string Email);
 
+    public class Validator : AbstractValidator<Request>
+    {
+        public Validator(AppDbContext dbContext)
+        {
+            RuleFor(x => x.Email).NotEmpty().EmailAddress();
+
+            RuleFor(x => x.Email)
+                .MustAsync(
+                    async (email, cancellation) =>
+                    {
+                        var user = await dbContext.Users.FirstOrDefaultAsync(
+                            u => u.Email == email,
+                            cancellationToken: cancellation
+                        );
+
+                        return user != null;
+                    }
+                )
+                .WithMessage("User not found.");
+        }
+    }
+
     public static async Task<IResult> Handler(
         Request request,
-        SarhneDbContext dbContext,
-        ISmtpEmailService emailService,
+        AppDbContext dbContext,
+        IEmailService emailService,
         ITemplateService templateService,
         IEmailTokenService emailTokenService,
         HttpContext httpContext
     )
     {
-        var user = await dbContext.Users.FirstOrDefaultAsync(u => u.Email == request.Email);
+        var user = await dbContext.Users.FirstAsync(u => u.Email == request.Email);
 
-        if (user == null)
-        {
-            return TypedResults.BadRequest(new { message = "User not found" });
-        }
-
-        var token = emailTokenService.Generate(request.Email);
+        var token = emailTokenService.Generate(request.Email, user.SecurityStamp.ToString());
 
         string origin = $"{httpContext.Request.Scheme}://{httpContext.Request.Host}";
         var verifyUrl =
@@ -51,6 +69,6 @@ public static class SendEmailVerification
 
         await emailService.SendAsync(request.Email, "Verify your email", emailBody);
 
-        return TypedResults.Ok(new { message = "Verification email sent." });
+        return Ok("Verification email sent.");
     }
 }

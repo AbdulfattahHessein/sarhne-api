@@ -1,13 +1,15 @@
+using Api.Models.Api;
 using Core.Entities;
 using Core.Enums;
 using FluentValidation;
 using Infrastructure;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace Api.Features.Auth;
 
-public static class Register
+public abstract class Register : ApiEndpoint
 {
     public record Request(string Email, string Password);
 
@@ -27,14 +29,14 @@ public static class Register
 
     public static async Task<IResult> Handler(
         Request model,
-        SarhneDbContext dbContext,
+        AppDbContext dbContext,
         IPasswordHasher<User> hasher
     )
     {
         var userExists = dbContext.Users.Any(u => u.Email == model.Email);
         if (userExists)
         {
-            return TypedResults.BadRequest(new { message = "User already exists" });
+            return BadRequest("User already exists");
         }
 
         // Save the user to the database
@@ -50,6 +52,6 @@ public static class Register
         dbContext.Users.Add(newUser);
         await dbContext.SaveChangesAsync();
 
-        return TypedResults.Ok(new { message = "User registered successfully" });
+        return NoContent();
     }
 }

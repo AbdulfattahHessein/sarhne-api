@@ -1,8 +1,8 @@
-﻿using Shared.Models.Email;
-
-namespace Shared.Services.Interfaces;
-
-public interface IEmailService
+﻿namespace Shared.Services.Interfaces
 {
-    Task SendEmailAsync(EmailMessage emailMessage);
+    public interface IEmailService
+    {
+        Task SendAsync(string to, string subject, string body);
+    }
 }
+

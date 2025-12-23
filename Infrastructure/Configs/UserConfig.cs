@@ -10,7 +10,11 @@ public class UserConfig : IEntityTypeConfiguration<User>
     {
         builder.Property(u => u.Gender).HasConversion<string>();
 
+        builder.HasIndex(u => u.Email).IsUnique();
+
         builder.HasOne(u => u.Settings).WithOne().HasForeignKey<Settings>(s => s.Id);
+
+        builder.Property(u => u.SecurityStamp).HasDefaultValueSql("NEWSEQUENTIALID()");
 
         ConfigureUserRoles(builder);
     }

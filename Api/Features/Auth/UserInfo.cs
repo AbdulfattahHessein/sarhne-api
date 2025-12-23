@@ -1,18 +1,21 @@
 using System.Security.Claims;
+using Api.Models.Api;
+using Api.Services.Implementations;
 using Infrastructure;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace Api.Features.Auth;
 
-public class UserInfo
+public abstract class UserInfo : ApiEndpoint
 {
-    public static async Task<IResult> Handler(HttpContext httpContext, SarhneDbContext dbContext)
+    public static async Task<IResult> Handler(HttpContext httpContext, AppDbContext dbContext)
     {
         var userId = httpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
 
         if (userId == null)
         {
-            return TypedResults.Unauthorized();
+            return NotFound();
         }
 
         var user = dbContext
@@ -29,9 +32,9 @@ public class UserInfo
         {
             await httpContext.SignOutAsync();
 
-            return TypedResults.NotFound("User not found.");
+            return NotFound();
         }
 
-        return TypedResults.Ok(user);
+        return Ok(user);
     }
 }

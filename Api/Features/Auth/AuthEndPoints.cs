@@ -1,7 +1,4 @@
-using Api.Extensions;
 using Api.Interfaces;
-using Core.Enums;
-using SharpGrip.FluentValidation.AutoValidation.Endpoints.Extensions;
 
 namespace Api.Features.Auth;
 
@@ -15,15 +12,16 @@ public class AuthEndPoints : IEndpoint
 
         authGroup.MapPost("/login", Login.Handler);
 
-        authGroup.MapPost("/logout", (Delegate)Logout.Handler);
+        authGroup.MapPost("/logout", Logout.Handler);
 
         authGroup.MapPost("/email-verification", SendEmailVerification.Handler);
 
         authGroup.MapGet("/email-verification", ConfirmEmail.Handler);
 
         authGroup.MapGet("/user-info", UserInfo.Handler);
-        // .RequireRoles(RoleType.User, RoleType.Admin);
 
-        // authGroup.MapGet("/roles", Roles.Handler).RequireRoles(RoleType.User, RoleType.Admin);
+        authGroup.MapPost("/forget-password", ForgetPassword.Handler);
+
+        authGroup.MapPost("/reset-password", ResetPassword.Handler);
     }
 }

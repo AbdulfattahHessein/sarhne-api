@@ -10,12 +10,14 @@
     <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="12.1.1" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.1" />
-    <PackageReference Include="Scalar.AspNetCore" Version="2.11.9" />
+    <PackageReference Include="Scalar.AspNetCore" Version="2.11.10" />
     <PackageReference Include="SharpGrip.FluentValidation.AutoValidation.Endpoints" Version="1.5.0" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="Features\User\Messages\" />
+    <Folder Include="Services\Contracts\" />
+    <Folder Include="Services\Implementations\" />
   </ItemGroup>
 
   <ItemGroup>

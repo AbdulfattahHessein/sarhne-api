@@ -7,7 +7,7 @@ public class PaginatedResponse<T> : SuccessResponse<T>
     public PaginatedResponse(
         T data,
         Paginator paginator,
-        string message = "Operation succeeded with pagination"
+        string message = "Succeeded with pagination"
     )
         : base(data, message)
     {
@@ -19,7 +19,7 @@ public class PaginatedResponse<T> : SuccessResponse<T>
         int totalCount,
         int currentPage = 1,
         int pageSize = 10,
-        string message = "Operation succeeded with pagination"
+        string message = "Succeeded with pagination"
     )
         : base(data, message)
     {
@@ -29,7 +29,7 @@ public class PaginatedResponse<T> : SuccessResponse<T>
     public static PaginatedResponse<TData> Success<TData>(
         TData data,
         Paginator paginator,
-        string message = "Operation succeeded with pagination"
+        string message = "Succeeded with pagination"
     ) => new(data, paginator, message);
 
     public static PaginatedResponse<TData> Success<TData>(
@@ -37,6 +37,6 @@ public class PaginatedResponse<T> : SuccessResponse<T>
         int totalCount,
         int currentPage = 1,
         int pageSize = 10,
-        string message = "Operation succeeded with pagination"
+        string message = "Succeeded with pagination"
     ) => new(data, totalCount, currentPage, pageSize, message);
 }

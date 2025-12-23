@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Infrastructure.Migrations;
 
-[DbContext(typeof(SarhneDbContext))]
+[DbContext(typeof(AppDbContext))]
 [Migration("20251221193832_UpdateUser")]
 partial class UpdateUser
 {

@@ -8,7 +8,7 @@ public class TransactionMiddleware(RequestDelegate next, ILogger<TransactionMidd
 
     private readonly RequestDelegate _next = next;
 
-    public async Task InvokeAsync(HttpContext context, SarhneDbContext dbContext)
+    public async Task InvokeAsync(HttpContext context, AppDbContext dbContext)
     {
         await using var transaction = await dbContext.Database.BeginTransactionAsync();
 
