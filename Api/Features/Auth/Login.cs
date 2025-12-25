@@ -7,14 +7,13 @@ using Infrastructure;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace Api.Features.Auth;
 
 public abstract class Login : ApiEndpoint
 {
-    public record Request(string Email, string Password);
+    public record Request(string Email, string Password, bool RememberMe);
 
     public class Validator : AbstractValidator<Request>
     {
@@ -90,7 +89,7 @@ public abstract class Login : ApiEndpoint
         await httpContext.SignInAsync(
             CookieAuthenticationDefaults.AuthenticationScheme,
             principal,
-            authProperties
+            request.RememberMe ? authProperties : null
         );
 
         return NoContent();

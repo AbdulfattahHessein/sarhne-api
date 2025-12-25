@@ -1,6 +1,4 @@
-using Adwar.Core.Models;
 using Api.Models.Api;
-using Core;
 using Core.Entities;
 using FluentValidation;
 using Infrastructure;

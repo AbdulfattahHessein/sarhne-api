@@ -1,6 +1,6 @@
 using System.Diagnostics.CodeAnalysis;
 
-namespace Core;
+namespace Api.Models;
 
 public class Result<TValue>
 {

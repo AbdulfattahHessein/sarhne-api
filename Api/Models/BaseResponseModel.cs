@@ -1,4 +1,4 @@
-﻿namespace Adwar.Core.Models;
+﻿namespace Api.Models;
 
 public record BaseResponse(int Id)
 {

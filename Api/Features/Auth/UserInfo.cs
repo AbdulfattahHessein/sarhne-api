@@ -1,9 +1,8 @@
 using System.Security.Claims;
 using Api.Models.Api;
-using Api.Services.Implementations;
 using Infrastructure;
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.EntityFrameworkCore;
 
 namespace Api.Features.Auth;
 
@@ -15,24 +14,25 @@ public abstract class UserInfo : ApiEndpoint
 
         if (userId == null)
         {
-            return NotFound();
+            return Ok("User not logged in.");
         }
 
-        var user = dbContext
-            .Users.Select(user => new
+        var user = await dbContext
+            .Users.AsNoTracking()
+            .Select(user => new
             {
                 user.Id,
                 user.Email,
                 user.IsEmailConfirmed,
                 Roles = user.Roles.Select(r => r.Name.ToString()).ToList(),
             })
-            .FirstOrDefault(u => u.Id.ToString() == userId);
+            .FirstOrDefaultAsync(u => u.Id == Guid.Parse(userId));
 
         if (user == null)
         {
             await httpContext.SignOutAsync();
 
-            return NotFound();
+            return Ok("User not logged in.");
         }
 
         return Ok(user);

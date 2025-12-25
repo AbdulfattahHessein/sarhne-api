@@ -16,6 +16,9 @@ public static class CookieAuthenticationDI
                 options.SlidingExpiration = true;
                 options.Cookie.IsEssential = true; // Bypass GDPR consent if the cookie is strictly for login
 
+                options.Cookie.SameSite = SameSiteMode.Lax; // Best for same-domain
+                options.Cookie.SecurePolicy = CookieSecurePolicy.Always; // Always use HTTPS in prod
+
                 options.Events = new CookieAuthenticationEvents
                 {
                     // Triggered when user is NOT logged in

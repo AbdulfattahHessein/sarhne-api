@@ -59,6 +59,8 @@ app.UseDefaultFiles();
 
 app.UseStaticFiles();
 
+app.UseCors("AllowClientApp");
+
 app.UseCookieAuthentication();
 
 app.UseMiddleware<ExceptionHandlingMiddleware>();

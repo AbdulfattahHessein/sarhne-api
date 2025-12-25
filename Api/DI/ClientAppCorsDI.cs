@@ -16,7 +16,7 @@ public static class ClientAppCorsDI
                     policy =>
                     {
                         policy
-                            .WithOrigins("http://localhost:4200") // Your frontend URL
+                            .WithOrigins("http://localhost:4200", "https://localhost:4200") // Your frontend URL
                             .AllowAnyHeader()
                             .AllowAnyMethod()
                             .AllowCredentials(); // <--- CRITICAL
