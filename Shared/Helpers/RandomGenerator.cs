@@ -2,7 +2,7 @@
 
 public static class RandomGenerator
 {
-    private static readonly Random random = new Random();
+    private static readonly Random random = new();
 
     public static int GenerateInteger(int min, int max)
     {

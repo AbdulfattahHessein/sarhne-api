@@ -1,4 +1,6 @@
+using Api.Extensions;
 using Api.Interfaces;
+using Core.Enums;
 
 namespace Api.Features.Auth;
 

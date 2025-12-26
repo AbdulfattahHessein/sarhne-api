@@ -1,39 +1,49 @@
+using System.Linq.Expressions;
 using System.Security.Claims;
+using Api.Extensions;
 using Api.Models.Api;
-using Infrastructure;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.EntityFrameworkCore;
+using Core.Entities;
 
 namespace Api.Features.Auth;
 
 public abstract class UserInfo : ApiEndpoint
 {
-    public static async Task<IResult> Handler(HttpContext httpContext, AppDbContext dbContext)
+    private record Response
     {
-        var userId = httpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+        public required string? Id { get; set; }
+        public required string? Email { get; set; }
+        public required bool? IsEmailConfirmed { get; set; }
+        public required IEnumerable<string>? Roles { get; set; }
+        public string? Name { get; set; }
+        public string? ProfileSlug { get; set; }
+    }
 
-        if (userId == null)
+    private static readonly Expression<Func<User, Response>> Selector = user =>
+        new()
+        {
+            Id = user.Id.ToString(),
+            Email = user.Email,
+            IsEmailConfirmed = user.IsEmailConfirmed,
+            Roles = user.Roles.Select(r => r.Name.ToString()).ToList(),
+            Name = user.Name,
+        };
+
+    public static async Task<IResult> Handler(ClaimsPrincipal User)
+    {
+        if (!User.IsAuthenticated)
         {
             return Ok("User not logged in.");
         }
 
-        var user = await dbContext
-            .Users.AsNoTracking()
-            .Select(user => new
-            {
-                user.Id,
-                user.Email,
-                user.IsEmailConfirmed,
-                Roles = user.Roles.Select(r => r.Name.ToString()).ToList(),
-            })
-            .FirstOrDefaultAsync(u => u.Id == Guid.Parse(userId));
-
-        if (user == null)
+        var user = new Response
         {
-            await httpContext.SignOutAsync();
-
-            return Ok("User not logged in.");
-        }
+            Id = User.Id,
+            Email = User.Email,
+            Roles = User.Roles,
+            Name = User.Name,
+            IsEmailConfirmed = User.IsEmailConfirmed,
+            ProfileSlug = User.ProfileSlug,
+        };
 
         return Ok(user);
     }

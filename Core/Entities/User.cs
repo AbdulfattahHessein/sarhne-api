@@ -5,8 +5,8 @@ namespace Core.Entities;
 
 public class User : BaseEntity
 {
-    public string Name { get; set; } = string.Empty;
-    public string Email { get; set; } = string.Empty;
+    public required string Name { get; set; } = string.Empty;
+    public required string Email { get; set; } = string.Empty;
     public string Bio { get; set; } = string.Empty;
     public string PhoneNumber { get; set; } = string.Empty;
     public string ProfileSlug { get; set; } = string.Empty;
@@ -20,7 +20,7 @@ public class User : BaseEntity
         }
     } = string.Empty;
     public bool IsEmailConfirmed { get; set; }
-    public bool IsActive { get; set; }
+    public bool IsActive { get; set; } = true;
     public Gender Gender { get; set; }
     public Guid SecurityStamp { get; set; }
     public ICollection<Message> SentMessages { get; set; } = [];

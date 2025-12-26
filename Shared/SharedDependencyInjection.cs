@@ -1,3 +1,4 @@
+using Api.Services.Implementations;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -10,14 +11,22 @@ namespace Shared
     {
         public static IServiceCollection AddSharedEmailService(
             this IServiceCollection services,
-            IHostEnvironment env,
-            bool useDev = false
+            IHostEnvironment env
         )
         {
-            if (env.IsDevelopment() && useDev)
+            if (env.IsDevelopment())
                 services.AddScoped<IEmailService, DevEmailService>();
             else
                 services.AddScoped<IEmailService, SmtpEmailService>();
+
+            return services;
+        }
+
+        public static IServiceCollection AddSharedEmailTokenService(
+            this IServiceCollection services
+        )
+        {
+            services.AddScoped<IEmailTokenService, EmailTokenService>();
 
             return services;
         }

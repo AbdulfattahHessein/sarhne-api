@@ -3,9 +3,12 @@ using Core.Entities;
 using Core.Enums;
 using FluentValidation;
 using Infrastructure;
+using Infrastructure.Extensions;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Shared.Helpers;
+using Shared.Services.Interfaces;
 
 namespace Api.Features.Auth;
 
@@ -30,7 +33,8 @@ public abstract class Register : ApiEndpoint
     public static async Task<IResult> Handler(
         Request model,
         AppDbContext dbContext,
-        IPasswordHasher<User> hasher
+        IPasswordHasher<User> hasher,
+        IEmailService emailService
     )
     {
         var userExists = dbContext.Users.Any(u => u.Email == model.Email);
@@ -40,7 +44,7 @@ public abstract class Register : ApiEndpoint
         }
 
         // Save the user to the database
-        var newUser = new User { Email = model.Email };
+        var newUser = new User { Email = model.Email, Name = model.Email.Split('@')[0] };
 
         var userRole = await dbContext.Roles.FirstOrDefaultAsync(r => r.Name == RoleType.User);
 
@@ -49,7 +53,10 @@ public abstract class Register : ApiEndpoint
 
         newUser.PasswordHash = hasher.HashPassword(newUser, model.Password); // In real app, hash the password
 
-        dbContext.Users.Add(newUser);
+        await dbContext.Users.AddAsync(newUser);
+
+        await dbContext.Users.GenerateSlugAsync(newUser);
+
         await dbContext.SaveChangesAsync();
 
         return NoContent();

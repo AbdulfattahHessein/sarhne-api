@@ -2,29 +2,17 @@ using Api.DI;
 using Api.Extensions;
 using Api.Interfaces;
 using Api.Middleware;
-using Api.Services.Implementations;
 using Core.Entities;
 using FluentValidation;
 using Infrastructure;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Shared;
-using Shared.Services;
-using Shared.Services.Interfaces;
 using SharpGrip.FluentValidation.AutoValidation.Endpoints.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddOpenApi(options =>
-{
-    options.CreateSchemaReferenceId = (json) =>
-    {
-        if (json.Type.FullName == null)
-            return json.Type.Name;
-
-        return json.Type.FullName.Replace("Api.Features.", "").Replace("+Request", "");
-    };
-});
+builder.Services.AddCustomOpenApi();
 
 builder.Services.AddEndpoints();
 
@@ -32,11 +20,11 @@ builder.Services.AddMemoryCache();
 
 builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
 
-builder.Services.AddScoped<IEmailTokenService, EmailTokenService>();
-
-builder.Services.AddScoped<IEmailService, SmtpEmailService>();
-
 builder.Services.AddSharedTemplateService();
+
+builder.Services.AddSharedEmailService(builder.Environment);
+
+builder.Services.AddSharedEmailTokenService();
 
 builder.Services.AddDbContext<AppDbContext>(options =>
 {

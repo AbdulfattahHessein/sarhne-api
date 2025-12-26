@@ -1,5 +1,6 @@
 using System.Net;
 using System.Security.Claims;
+using Api.Extensions;
 using Api.Models.Api;
 using Core.Entities;
 using FluentValidation;
@@ -32,15 +33,11 @@ public abstract class Login : ApiEndpoint
     public static async Task<IResult> Handler(
         Request request,
         AppDbContext dbContext,
-        ClaimsPrincipal User,
         IPasswordHasher<User> hasher,
         HttpContext httpContext
     )
     {
-        if (
-            User.Identity?.IsAuthenticated == true
-            && User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value == request.Email
-        )
+        if (httpContext.User.IsAuthenticated && httpContext.User.Email == request.Email)
         {
             return BadRequest("You are already logged in.");
         }
@@ -62,18 +59,23 @@ public abstract class Login : ApiEndpoint
 
         List<Claim> claims =
         [
-            new(ClaimTypes.Email, request.Email),
-            new(ClaimTypes.NameIdentifier, user.Id.ToString()),
+            new(UserClaimTypes.Email, request.Email),
+            new(UserClaimTypes.Id, user.Id.ToString()),
+            new(UserClaimTypes.Name, user.Name),
+            new(UserClaimTypes.IsEmailConfirmed, user.IsEmailConfirmed.ToString()),
+            new(UserClaimTypes.ProfileSlug, user.ProfileSlug),
         ];
 
         foreach (var userRole in user.Roles)
         {
-            claims.Add(new Claim(ClaimTypes.Role, userRole.Name.ToString()));
+            claims.Add(new Claim(UserClaimTypes.Roles, userRole.Name.ToString()));
         }
 
         var identity = new ClaimsIdentity(
             claims,
-            CookieAuthenticationDefaults.AuthenticationScheme
+            CookieAuthenticationDefaults.AuthenticationScheme,
+            UserClaimTypes.Name,
+            UserClaimTypes.Roles
         );
 
         var principal = new ClaimsPrincipal(identity);
