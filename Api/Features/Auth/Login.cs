@@ -7,6 +7,7 @@ using FluentValidation;
 using Infrastructure;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -30,12 +31,14 @@ public abstract class Login : ApiEndpoint
         }
     }
 
-    public static async Task<IResult> Handler(
+    public static readonly Delegate Handler = async Task<
+        Results<BadRequest<ApiResponse>, NotFound<ApiResponse>, NoContent>
+    > (
         Request request,
         AppDbContext dbContext,
         IPasswordHasher<User> hasher,
         HttpContext httpContext
-    )
+    ) =>
     {
         if (httpContext.User.IsAuthenticated && httpContext.User.Email == request.Email)
         {
@@ -95,5 +98,5 @@ public abstract class Login : ApiEndpoint
         );
 
         return NoContent();
-    }
+    };
 }

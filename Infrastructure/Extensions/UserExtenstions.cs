@@ -14,7 +14,7 @@ public static class UserExtensions
             string slug = baseSlug;
             int counter = 1;
 
-            while (await users.AnyAsync(u => u.ProfileSlug == slug))
+            while (await users.AnyAsync(u => u.ProfileSlug == slug && u.Id != user.Id))
             {
                 slug = $"{baseSlug}-{counter}";
 

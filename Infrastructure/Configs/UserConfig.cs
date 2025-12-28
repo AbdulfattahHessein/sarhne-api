@@ -12,6 +12,8 @@ public class UserConfig : IEntityTypeConfiguration<User>
 
         builder.HasIndex(u => u.Email).IsUnique();
 
+        builder.HasIndex(u => u.ProfileSlug).IsUnique();
+
         builder.HasOne(u => u.Settings).WithOne().HasForeignKey<Settings>(s => s.Id);
 
         builder.Property(u => u.SecurityStamp).HasDefaultValueSql("NEWSEQUENTIALID()");

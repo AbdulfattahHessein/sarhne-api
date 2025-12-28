@@ -12,14 +12,14 @@ public abstract class ForgetPassword : ApiEndpoint
 {
     public record Request(string Email);
 
-    public static async Task<IResult> Handler(
+    public static readonly Delegate Handler = async (
         Request request,
         AppDbContext dbContext,
         IEmailTokenService emailTokenService,
         HttpContext httpContext,
         IEmailService emailService,
         ITemplateService templateService
-    )
+    ) =>
     {
         var user = await dbContext.Users.FirstAsync(u => u.Email == request.Email);
 
@@ -50,7 +50,7 @@ public abstract class ForgetPassword : ApiEndpoint
         await emailService.SendAsync(user.Email, "Reset Password", emailBody);
 
         return NoContent();
-    }
+    };
 
     public class Validator : AbstractValidator<Request>
     {

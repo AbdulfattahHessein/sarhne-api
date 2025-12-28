@@ -10,14 +10,17 @@ public abstract class ConfirmEmail : ApiEndpoint
 {
     public record Request(string Email, string Token);
 
-    public static async Task<IResult> Handler([AsParameters] Request _, AppDbContext dbContext)
+    public static readonly Delegate Handler = async (
+        [AsParameters] Request _,
+        AppDbContext dbContext
+    ) =>
     {
         await dbContext.Users.ExecuteUpdateAsync(u =>
             u.SetProperty(user => user.IsEmailConfirmed, true)
         );
 
         return NoContent();
-    }
+    };
 
     public class Validator : AbstractValidator<Request>
     {

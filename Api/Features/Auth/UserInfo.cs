@@ -3,12 +3,13 @@ using System.Security.Claims;
 using Api.Extensions;
 using Api.Models.Api;
 using Core.Entities;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace Api.Features.Auth;
 
 public abstract class UserInfo : ApiEndpoint
 {
-    private record Response
+    public record Response
     {
         public required string? Id { get; set; }
         public required string? Email { get; set; }
@@ -28,7 +29,9 @@ public abstract class UserInfo : ApiEndpoint
             Name = user.Name,
         };
 
-    public static async Task<IResult> Handler(ClaimsPrincipal User)
+    public static async Task<Results<Ok<SuccessResponse<Response>>, IResult>> Handler(
+        ClaimsPrincipal User
+    )
     {
         if (!User.IsAuthenticated)
         {

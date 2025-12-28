@@ -26,8 +26,8 @@ public class PaginatedResponse<T> : SuccessResponse<T>
         Paginator = new Paginator(totalCount, currentPage, pageSize);
     }
 
-    public static PaginatedResponse<TData> Success<TData>(
-        TData data,
+    public static PaginatedResponse<T> Success(
+        T data,
         Paginator paginator,
         string message = "Succeeded with pagination"
     ) => new(data, paginator, message);

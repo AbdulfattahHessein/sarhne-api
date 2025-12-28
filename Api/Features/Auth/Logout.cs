@@ -6,10 +6,13 @@ namespace Api.Features.Auth;
 
 public abstract class Logout : ApiEndpoint
 {
-    public static async Task<IResult> Handler(HttpContext httpContext, CancellationToken _)
+    public static readonly Delegate Handler = async (
+        HttpContext httpContext,
+        CancellationToken _
+    ) =>
     {
         await httpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 
         return NoContent();
-    }
+    };
 }
