@@ -2,6 +2,7 @@ using Api.Models.Api;
 using Core.Entities;
 using FluentValidation;
 using Infrastructure;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Shared.Services.Interfaces;
@@ -12,11 +13,11 @@ public abstract class ResetPassword : ApiEndpoint
 {
     public record Request(string Email, string Token, string Password);
 
-    public static readonly Delegate Handler = async (
+    public static async Task<NoContent> Handler(
         Request request,
         AppDbContext dbContext,
         IPasswordHasher<User> PasswordHasher
-    ) =>
+    )
     {
         var user = await dbContext.Users.FirstAsync(u => u.Email == request.Email);
 
@@ -25,7 +26,7 @@ public abstract class ResetPassword : ApiEndpoint
         await dbContext.SaveChangesAsync();
 
         return NoContent();
-    };
+    }
 
     public class Validator : AbstractValidator<Request>
     {

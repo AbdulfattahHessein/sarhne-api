@@ -36,12 +36,12 @@ public abstract class SendMessage : ApiEndpoint
         }
     }
 
-    public static readonly Delegate Handler = async (
+    public static async Task<Created<ApiResponse<BaseResponse>>> Handler(
         Request model,
         AppDbContext dbContext,
         ClaimsPrincipal User,
         CancellationToken cancellationToken
-    ) =>
+    )
     {
         var senderId = Guid.Parse(User.Id);
 
@@ -58,5 +58,5 @@ public abstract class SendMessage : ApiEndpoint
         await dbContext.SaveChangesAsync(cancellationToken);
 
         return Created($"/api/user/messages/{message.Id}", message.Id, "Message sent successfully");
-    };
+    }
 }

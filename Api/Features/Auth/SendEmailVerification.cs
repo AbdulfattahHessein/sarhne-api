@@ -2,6 +2,7 @@ using System.Net;
 using Api.Models.Api;
 using FluentValidation;
 using Infrastructure;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 using Shared.Services.Interfaces;
 using Shared.Templates;
@@ -34,14 +35,14 @@ public abstract class SendEmailVerification : ApiEndpoint
         }
     }
 
-    public static readonly Delegate Handler = async (
+    public static async Task<Ok<ApiResponse>> Handler(
         Request request,
         AppDbContext dbContext,
         IEmailService emailService,
         ITemplateService templateService,
         IEmailTokenService emailTokenService,
         HttpContext httpContext
-    ) =>
+    )
     {
         var user = await dbContext.Users.FirstAsync(u => u.Email == request.Email);
 
@@ -70,5 +71,5 @@ public abstract class SendEmailVerification : ApiEndpoint
         await emailService.SendAsync(request.Email, "Verify your email", emailBody);
 
         return Ok("Verification email sent.");
-    };
+    }
 }

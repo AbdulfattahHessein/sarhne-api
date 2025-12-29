@@ -30,9 +30,11 @@ public abstract class Register : ApiEndpoint
         }
     }
 
-    public static readonly Delegate Handler = async Task<
-        Results<BadRequest<ApiResponse>, NoContent>
-    > (Request model, AppDbContext dbContext, IPasswordHasher<User> hasher) =>
+    public static async Task<Results<BadRequest<ApiResponse>, NoContent>> Handler(
+        Request model,
+        AppDbContext dbContext,
+        IPasswordHasher<User> hasher
+    )
     {
         var userExists = dbContext.Users.Any(u => u.Email == model.Email);
         if (userExists)
@@ -57,5 +59,5 @@ public abstract class Register : ApiEndpoint
         await dbContext.SaveChangesAsync();
 
         return NoContent();
-    };
+    }
 }

@@ -30,7 +30,7 @@ public class ExceptionHandlingMiddleware(
     {
         logger.LogError("{Message}", ex.Message);
 
-        var response = ApiResponse.Failure(ex.Message);
+        var response = ApiResponses.Failure(ex.Message);
 
         var result = JsonSerializer.Serialize(response, jsonSerializerOptions);
 

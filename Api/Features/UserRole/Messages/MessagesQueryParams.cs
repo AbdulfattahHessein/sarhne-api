@@ -15,7 +15,7 @@ public record MessagesQueryParams : PaginatedQueryParams
 {
     public string? Search { get; set; }
     public string? Type { get; set; }
-    public bool IsFav { get; set; } = false;
+    public bool? IsFav { get; set; } = false;
 }
 
 public static class MessagesQueryParamsExtensions
@@ -26,7 +26,7 @@ public static class MessagesQueryParamsExtensions
         MessagesQueryParams queryParams
     )
     {
-        query = query.PageBy(queryParams.PageNumber, queryParams.PageSize);
+        query = query.PageBy(queryParams.PageNumber ?? 1, queryParams.PageSize ?? 10);
 
         if (!string.IsNullOrWhiteSpace(queryParams.Search))
         {
@@ -50,7 +50,7 @@ public static class MessagesQueryParamsExtensions
             );
         }
 
-        if (queryParams.IsFav)
+        if (queryParams.IsFav.HasValue && queryParams.IsFav.Value)
         {
             query = query.Where(x => x.IsFav);
         }

@@ -10,40 +10,40 @@ public abstract class ApiEndpoint
         return TypedResults.NoContent();
     }
 
-    public static Ok<SuccessResponse<T>> Ok<T>(T value, string message = "Succeeded")
+    public static Ok<ApiResponse<T>> Ok<T>(T value, string message = "Succeeded")
     {
-        return TypedResults.Ok(SuccessResponse<T>.Success(value, message));
+        return TypedResults.Ok(ApiResponses.Success(value, message));
     }
 
     public static Ok<ApiResponse> Ok(string message = "Succeeded")
     {
-        return TypedResults.Ok(ApiResponse.Success(message));
+        return TypedResults.Ok(ApiResponses.Success(message));
     }
 
     public static BadRequest<ApiResponse> BadRequest(string message)
     {
-        return TypedResults.BadRequest(ApiResponse.Failure(message));
+        return TypedResults.BadRequest(ApiResponses.Failure(message));
     }
 
-    public static Ok<PaginatedResponse<T>> Ok<T>(
+    public static Ok<ApiResponse<T>> Ok<T>(
         T value,
         int totalCount,
-        int pageNumber = 1,
-        int pageSize = 10
+        int? pageNumber = 1,
+        int? pageSize = 10
     )
         where T : IEnumerable =>
-        TypedResults.Ok(PaginatedResponse<T>.Success(value, totalCount, pageNumber, pageSize));
+        TypedResults.Ok(ApiResponses.Success(value, totalCount, pageNumber ?? 1, pageSize ?? 10));
 
-    public static Created<SuccessResponse<T>> Created<T>(
+    public static Created<ApiResponse<T>> Created<T>(
         string uri,
         T value,
         string message = "Created"
     )
     {
-        return TypedResults.Created(uri, SuccessResponse<T>.Success(value, message));
+        return TypedResults.Created(uri, ApiResponses.Success(value, message));
     }
 
-    public static Created<SuccessResponse<BaseResponse>> Created(
+    public static Created<ApiResponse<BaseResponse>> Created(
         string uri,
         Guid value,
         string message = "Created"
@@ -54,12 +54,12 @@ public abstract class ApiEndpoint
 
     public static Created<ApiResponse> Created(string uri, string message = "Created")
     {
-        return TypedResults.Created(uri, ApiResponse.Success(message));
+        return TypedResults.Created(uri, ApiResponses.Success(message));
     }
 
     public static NotFound<ApiResponse> NotFound(string message = nameof(Errors.NotFound))
     {
-        return TypedResults.NotFound(ApiResponse.Failure(message));
+        return TypedResults.NotFound(ApiResponses.Failure(message));
     }
 
     public static UnauthorizedHttpResult Unauthorized()
@@ -74,7 +74,7 @@ public abstract class ApiEndpoint
         UnauthorizedHttpResult
     > Failure(Error error)
     {
-        var response = ApiResponse.Failure(error.Code);
+        var response = ApiResponses.Failure(error.Code);
 
         return error switch
         {

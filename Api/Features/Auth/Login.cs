@@ -31,14 +31,14 @@ public abstract class Login : ApiEndpoint
         }
     }
 
-    public static readonly Delegate Handler = async Task<
+    public static async Task<
         Results<BadRequest<ApiResponse>, NotFound<ApiResponse>, NoContent>
-    > (
+    > Handler(
         Request request,
         AppDbContext dbContext,
         IPasswordHasher<User> hasher,
         HttpContext httpContext
-    ) =>
+    )
     {
         if (httpContext.User.IsAuthenticated && httpContext.User.Email == request.Email)
         {
@@ -98,5 +98,5 @@ public abstract class Login : ApiEndpoint
         );
 
         return NoContent();
-    };
+    }
 }

@@ -1,6 +1,7 @@
 using Api.Models.Api;
 using FluentValidation;
 using Infrastructure;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 using Shared.Services.Interfaces;
 
@@ -10,17 +11,14 @@ public abstract class ConfirmEmail : ApiEndpoint
 {
     public record Request(string Email, string Token);
 
-    public static readonly Delegate Handler = async (
-        [AsParameters] Request _,
-        AppDbContext dbContext
-    ) =>
+    public static async Task<NoContent> Handler([AsParameters] Request _, AppDbContext dbContext)
     {
         await dbContext.Users.ExecuteUpdateAsync(u =>
             u.SetProperty(user => user.IsEmailConfirmed, true)
         );
 
         return NoContent();
-    };
+    }
 
     public class Validator : AbstractValidator<Request>
     {

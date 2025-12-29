@@ -29,7 +29,7 @@ public abstract class UserInfo : ApiEndpoint
             Name = user.Name,
         };
 
-    public static async Task<Results<Ok<SuccessResponse<Response>>, IResult>> Handler(
+    public static async Task<Results<Ok<ApiResponse<Response>>, IResult>> Handler(
         ClaimsPrincipal User
     )
     {

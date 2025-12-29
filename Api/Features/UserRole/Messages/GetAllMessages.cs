@@ -6,13 +6,14 @@ using Core.Entities;
 using FluentValidation;
 using Infrastructure;
 using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace Api.Features.UserRole.Messages;
 
 public abstract class GetAllMessages : ApiEndpoint
 {
-    private record Response
+    public record Response
     {
         public Guid Id { get; set; }
         public string Content { get; set; } = string.Empty;
@@ -37,12 +38,12 @@ public abstract class GetAllMessages : ApiEndpoint
             SendAnonymously = message.SendAnonymously,
         };
 
-    public static readonly Delegate Handler = async (
+    public static async Task<Ok<ApiResponse<List<Response>>>> Handler(
         [AsParameters] MessagesQueryParams queryParams,
         AppDbContext dbContext,
         ClaimsPrincipal User,
         CancellationToken cancellationToken
-    ) =>
+    )
     {
         var query = dbContext
             .Messages.OrderByDescending(m => m.Date)
@@ -53,5 +54,5 @@ public abstract class GetAllMessages : ApiEndpoint
         var messages = await query.Select(Selector).ToListAsync(cancellationToken);
 
         return Ok(messages, count, queryParams.PageNumber, queryParams.PageSize);
-    };
+    }
 }
