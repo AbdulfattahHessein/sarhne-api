@@ -20,5 +20,7 @@ public class UserSettingsEndPoints : IEndpoint
         userSettings.MapPatch("/profile-slug", ChangeProfileSlug.Handler);
 
         userSettings.MapPatch("/password", ChangePassword.Handler);
+
+        userSettings.MapPatch("/privacy", ChangePrivacy.Handler);
     }
 }

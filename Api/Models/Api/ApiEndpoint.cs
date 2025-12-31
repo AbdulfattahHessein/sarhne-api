@@ -49,7 +49,7 @@ public abstract class ApiEndpoint
         string message = "Created"
     )
     {
-        return Created(uri, value, message);
+        return TypedResults.Created(uri, ApiResponses.Success<BaseResponse>(value, message));
     }
 
     public static Created<ApiResponse> Created(string uri, string message = "Created")
