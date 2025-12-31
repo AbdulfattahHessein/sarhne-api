@@ -1,4 +1,6 @@
+using Api.Extensions;
 using Api.Interfaces;
+using Core.Enums;
 
 namespace Api.Features.Accounts;
 
@@ -6,8 +8,10 @@ public class AccountsEndPoints : IEndpoint
 {
     public void MapEndpoint(IEndpointRouteBuilder app)
     {
-        var authGroup = app.MapGroup("/accounts").WithTags("Accounts");
+        var accountsGroup = app.MapGroup("/accounts").WithTags("Accounts");
 
-        authGroup.MapGet("/{slug}", AccountInfoBySlug.Handler);
+        accountsGroup.MapGet("/{slug}", AccountInfoBySlug.Handler);
+
+        accountsGroup.MapGet("/me", GetMyAccount.Handler).RequireRoles(RoleType.User);
     }
 }

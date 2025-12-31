@@ -1,3 +1,4 @@
+using Api;
 using Api.DI;
 using Api.Extensions;
 using Api.Interfaces;
@@ -36,7 +37,10 @@ builder.Services.AddCookieAuthentication();
 builder.Services.AddClientAppCorsPolicy();
 
 builder
-    .Services.AddFluentValidationAutoValidation()
+    .Services.AddFluentValidationAutoValidation(configuration =>
+    {
+        configuration.OverrideDefaultResultFactoryWith<CustomResultFactory>();
+    })
     .AddValidatorsFromAssemblyContaining<IValidationsMarker>();
 
 var app = builder.Build();

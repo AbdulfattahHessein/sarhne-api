@@ -45,7 +45,7 @@ public static class ApiResponses
 
     public static ApiResponse Failure(string message = "Failed") => new() { Message = message };
 
-    public static ApiResponse<T> Failure<T>(
+    public static ApiResponse Failure(
         IDictionary<string, string[]> errors,
         string message = "Failed"
     ) => new() { Message = message, Errors = errors };
